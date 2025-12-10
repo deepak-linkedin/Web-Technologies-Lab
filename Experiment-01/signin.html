@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign In - VIT-AP University</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 400px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #004080;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #signinBtn {
+      background-color: #004080;
+      color: white;
+    }
+
+    #cancelBtn {
+      background-color: #ffcc00;
+      color: #004080;
+    }
+
+    #backBtn {
+      background-color: #ccc;
+      color: black;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Sign In</h2>
+    <form id="signinForm">
+      <label for="regNo">Registration Number:</label>
+      <input type="text" id="signinRegNo" name="regNo">
+      <div id="signinRegNoError" class="error"></div>
+
+      <label for="name">Name:</label>
+      <input type="text" id="signinName" name="name">
+      <div id="signinNameError" class="error"></div>
+
+      <div class="buttons">
+        <button type="button" id="signinBtn">Sign In</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+        <button type="button" id="backBtn">Back</button>
+      </div>
+    </form>
+    <div id="signinSuccessMessage" class="success"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
