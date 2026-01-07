@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Canvas</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="500" height="300" style="border:1px solid black;">
+        Browser does not support the canvas element.
+    </canvas>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        //filled rectangle
+        ctx.fillStyle = "cyan";
+        ctx.fillRect(20,20,150,80);
+
+        //filled circle
+        ctx.beginPath();
+        ctx.arc(300,70,40,0,2*Math.PI);
+        ctx.fillStyle = "orange";
+        ctx.fill();
+
+        //straight line
+        ctx.beginPath();
+        ctx.moveTo(50,200);
+        ctx.lineTo(450,200);
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        //text
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText("HTML5 Canvas",170,150);
+    </script>
+</body>
+</html>

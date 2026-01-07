@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Audio and Video Web Page</title>
+</head>
+<body>
+    <h2>Audio Player</h2>
+    <audio id="audioPlayer" controls>
+        <source src="audio.mpeg" type="audio/mpeg">
+        Browser does not support audio.
+    </audio>
+    <p>Current Time: <span id="audioTime">0</span> seconds</p>
+
+    <hr>
+    <h2>Video Player</h2>
+    <video id="videoPlayer" width="400" controls>
+        <source src = "video.mp4" type="video/mp4">
+        Browser does not support video.
+    </video>
+    <p>Current Time: <span id="videoTime">0</span> seconds</p>
+
+    <script>
+        var audio = document.getElementById("audioPlayer");
+        var audioTime = document.getElementById("audioTime");
+
+        audio.addEventListener("timeupdate",function() {
+            audioTime.textContent = audio.currentTime.toFixed(0);
+        });
+
+        //video time update
+        var video = document.getElementById("videoPlayer");
+        var videoTime = document.getElementById("videoTime");
+
+        video.addEventListener("timeupdate",function() {
+            videoTime.textContent = video.currentTime.toFixed(0);
+        });
+    </script>
+</body>
+</html>
