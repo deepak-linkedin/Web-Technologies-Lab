@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adaptive Registration System</title>
+    <style>
+        body {
+            font-family: Arial,sans-serif;
+            background: linear-gradient(to right, #74ebd5, #9face6);
+        }
+        form {
+            width: 400px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        label{
+            display: block;
+            margin-top: 10px;
+        }
+        input,select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .error {
+            border: 2px solid red;
+        }
+        .hidden {
+            display: none;
+        }
+        .message {
+            font-size: 12px;
+            color: red;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <form id="registrationForm">
+        <h2> User Registration</h2>
+
+        <label>Name</label>
+        <input type="text" id="name">
+
+        <label>Email</label>
+        <input type="email" id="email">
+        <div class="message" id="emailMsg"></div>
+
+        <label>Password</label>
+        <input type="password" id="password">
+        <div class="message" id="passMsg"></div>
+
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword">
+
+        <label>Age</label>
+        <input type="number" id="age">
+
+        <label>Role</label>
+        <select id="role" onchange="handleRoleChange()">
+            <option value="">Select Role</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
+        </select>
+
+        <div id="skillsSection" class="hidden">
+            <label>Skills</label>
+            <input type="text" id="skills">
+        </div>
+        
+        <button type="submit" id="submitBtn" disabled>Register</button>
+    </form>
+
+    <script>
+        const form = document.getElementById("registrationForm");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const role = document.getElementById("role");
+        const skillsSection = document.getElementById("skillsSection");
+        const submitBtn = document.getElementById("submitBtn");
+
+        function validateEmail() {
+            const emailMsg = document.getElementById("emailMsg");
+            if(!email.value.endsWith("@gmail.com")){
+                email.classList.add("error");
+                emailMsg.textContent = "Email must be a @gmail.com address";
+                return false;
+            }
+            email.classList.remove("error");
+            emailMsg.textContent = "";
+            return true;
+        }
+
+        function validatePassword() {
+            const passMsg = document.getElementById("passMsg");
+            let value = password.value;
+
+            if(role.value === "admin") {
+                if(!(/[A-Z]/.test(value) && /[0-9]/.test(value) && value.length>=8)){
+                    passMsg.textContent = "Admin password must contain uppercase, number & 8 characters";
+                    password.classList.add("error");
+                    return false;
+                }
+                
+            }else {
+                if(value.length<6){
+                    passMsg.textContent = "Password must be atleast 6 characters";
+                    password.classList.add("error");
+                    return false;
+                }
+            }
+            password.classList.remove("error");
+            passMsg.textContent = "";
+            return true;
+        }
+
+        function validateConfirmPassword() {
+            if(password.value !== confirmPassword.value){
+                confirmPassword.classList.add("error");
+                return false;
+            }
+            confirmPassword.classList.remove("error");
+            return true;
+        }
+
+        function handleRoleChange() {
+            if(role.value==="student"|| role.value==="teacher"){
+                skillsSection.classList.remove("hidden")
+            }else{
+                skillsSection.classList.add("hidden");
+            }
+            validateForm();
+        }
+
+        function validateForm() {
+            const valid = validateEmail() &&
+                            validatePassword() &&
+                            validateConfirmPassword() &&
+                            role.value!=="";
+            submitBtn.disabled = !valid;
+        }
+
+        email.addEventListener("input",validateForm);
+        password.addEventListener("input",validateForm);
+        confirmPassword.addEventListener("input",validateForm);
+
+        form.addEventListener("submit",function(e){
+            if(submitBtn.disabled) {
+                e.preventDefault();
+                alert("Please fix validation errors!");
+            }else{
+                alert("Registration Successful!");
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Survey Builder</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            margin: 0;
+            padding: 0;
+        }
+
+        .survey-container {
+            width: 650px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff7a18;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #e86c0c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="survey-container">
+    <h2>📋 Student Feedback Survey</h2>
+
+    <form id="surveyForm"></form>
+
+    <button onclick="submitSurvey()">Submit Survey</button>
+</div>
+
+<script>
+
+    const questions = [
+        {
+            id: "q1",
+            text: "Enter your full name",
+            type: "text",
+            required: true,
+            maxLength: 20
+        },
+        {
+            id: "q2",
+            text: "Select your gender",
+            type: "radio",
+            required: true,
+            options: ["Male", "Female", "Other"]
+        },
+        {
+            id: "q3",
+            text: "Select your favorite subjects (Choose at least 1)",
+            type: "checkbox",
+            required: true,
+            minSelect: 1,
+            options: ["Maths", "Computer Science", "Physics", "Chemistry"]
+        }
+    ];
+
+    const form = document.getElementById("surveyForm");
+
+    function generateSurvey() {
+        questions.forEach(q => {
+            const div = document.createElement("div");
+            div.className = "question";
+            div.id = q.id;
+
+            let html = `<label>${q.text}</label>`;
+
+            if (q.type === "text") {
+                html += `<input type="text" maxlength="${q.maxLength}">`;
+            }
+
+            if (q.type === "radio" || q.type === "checkbox") {
+                html += `<div class="options">`;
+                q.options.forEach(opt => {
+                    html += `
+                        <label>
+                            <input type="${q.type}" name="${q.id}" value="${opt}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            html += `<div class="error"></div>`;
+            div.innerHTML = html;
+            form.appendChild(div);
+        });
+    }
+
+    function validateSurvey() {
+        let isValid = true;
+
+        questions.forEach(q => {
+            const container = document.getElementById(q.id);
+            const errorDiv = container.querySelector(".error");
+            errorDiv.innerText = "";
+
+            if (q.type === "text") {
+                const input = container.querySelector("input");
+                if (q.required && input.value.trim() === "") {
+                    errorDiv.innerText = "This field is required";
+                    isValid = false;
+                }
+            }
+
+            if (q.type === "radio") {
+                const selected = container.querySelector("input:checked");
+                if (q.required && !selected) {
+                    errorDiv.innerText = "Please select one option";
+                    isValid = false;
+                }
+            }
+
+            if (q.type === "checkbox") {
+                const selected = container.querySelectorAll("input:checked").length;
+                if (q.required && selected < q.minSelect) {
+                    errorDiv.innerText = "Select at least one option";
+                    isValid = false;
+                }
+            }
+        });
+
+        return isValid;
+    }
+
+    function submitSurvey() {
+        if (validateSurvey()) {
+            alert("✅ Survey submitted successfully!");
+        } else {
+            alert("❌ Please fix validation errors");
+        }
+    }
+
+    generateSurvey();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi-Stage Form Workflow</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #74ebd5, #9face6);
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        text-align: center;
+        color: #243b55;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background: #ddd;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .progress {
+        height: 12px;
+        width: 0%;
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        transition: width 0.4s ease;
+    }
+
+    .stage {
+        display: none;
+    }
+
+    .stage.active {
+        display: block;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .error {
+        color: red;
+        font-size: 13px;
+        display: none;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        background: #243b55;
+        color: white;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    .success {
+        text-align: center;
+        color: green;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Multi-Stage Registration Form</h2>
+
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="stage active">
+        <label>Full Name</label>
+        <input type="text" id="name">
+        <span class="error">Name is required</span>
+    </div>
+
+    <div class="stage">
+        <label>Email</label>
+        <input type="email" id="email">
+        <span class="error">Valid email required</span>
+
+        <label>Age</label>
+        <input type="number" id="age">
+        <span class="error">Age must be 18 or above</span>
+    </div>
+
+    <div class="stage">
+        <label>Password</label>
+        <input type="password" id="password">
+        <span class="error">Minimum 6 characters required</span>
+
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword">
+        <span class="error">Passwords must match</span>
+    </div>
+
+    <div class="stage">
+        <label>Phone Number</label>
+        <input type="tel" id="phone">
+        <span class="error">10-digit phone number required</span>
+
+        <p class="success">✔ Ready to Submit</p>
+    </div>
+
+    <div class="buttons">
+        <button onclick="prevStage()">Previous</button>
+        <button onclick="nextStage()">Next</button>
+    </div>
+</div>
+
+<script>
+    let currentStage = 0;
+    const stages = document.querySelectorAll(".stage");
+    const progress = document.getElementById("progress");
+
+    let formData = {};
+
+    function updateUI() {
+        stages.forEach((stage, index) => {
+            stage.classList.toggle("active", index === currentStage);
+        });
+        progress.style.width = ((currentStage + 1) / stages.length) * 100 + "%";
+    }
+
+    function validateStage() {
+        let valid = true;
+        const errors = stages[currentStage].querySelectorAll(".error");
+        errors.forEach(e => e.style.display = "none");
+
+        if (currentStage === 0) {
+            const name = document.getElementById("name").value.trim();
+            if (!name) {
+                errors[0].style.display = "block";
+                valid = false;
+            }
+            formData.name = name;
+        }
+
+        if (currentStage === 1) {
+            const email = document.getElementById("email").value;
+            const age = document.getElementById("age").value;
+
+            if (!email.includes("@")) {
+                errors[0].style.display = "block";
+                valid = false;
+            }
+            if (age < 18) {
+                errors[1].style.display = "block";
+                valid = false;
+            }
+            formData.email = email;
+            formData.age = age;
+        }
+
+        if (currentStage === 2) {
+            const pass = document.getElementById("password").value;
+            const confirm = document.getElementById("confirmPassword").value;
+
+            if (pass.length < 6) {
+                errors[0].style.display = "block";
+                valid = false;
+            }
+            if (pass !== confirm) {
+                errors[1].style.display = "block";
+                valid = false;
+            }
+            formData.password = pass;
+        }
+
+        if (currentStage === 3) {
+            const phone = document.getElementById("phone").value;
+            if (phone.length !== 10) {
+                errors[0].style.display = "block";
+                valid = false;
+            }
+            formData.phone = phone;
+        }
+
+        return valid;
+    }
+
+    function nextStage() {
+        if (validateStage()) {
+            if (currentStage < stages.length - 1) {
+                currentStage++;
+                updateUI();
+            } else {
+                alert("Form Submitted Successfully!\n\n" + JSON.stringify(formData, null, 2));
+            }
+        }
+    }
+
+    function prevStage() {
+        if (currentStage > 0) {
+            currentStage--;
+            updateUI();
+        }
+    }
+</script>
+
+</body>
+</html>
