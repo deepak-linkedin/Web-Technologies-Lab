@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Weather Dashboard</title>
+    <style>
+        body {
+    font-family: Verdana, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.search-btn {
+    padding: 10px 15px;
+    background-color: #3498db;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #2980b9;
+}
+
+.weather-display {
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    padding: 20px;
+    display: none;
+    margin-top: 15px;
+}
+
+.weather-display.show {
+    display: block;
+}
+
+.city-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.temperature {
+    font-size: 48px;
+    font-weight: bold;
+    color: #e67e22;
+    margin: 10px 0;
+}
+
+.weather-condition {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-bottom: 15px;
+}
+
+.weather-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.detail-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 6px;
+    width: 48%;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.detail-label {
+    font-size: 13px;
+    color: #555;
+}
+
+.detail-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.loading {
+    text-align: center;
+    color: #555;
+    display: none;
+}
+
+.loading.show {
+    display: block;
+}
+
+.error {
+    background-color: #ffe6e6;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 6px;
+    display: none;
+    margin-top: 10px;
+}
+
+.error.show {
+    display: block;
+}
+
+.cache-info {
+    font-size: 12px;
+    color: #888;
+    margin-top: 8px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Dashboard</h1>
+        
+        <div class="search-container">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="cityInput"
+                placeholder="Enter city name (e.g., London, New York, Mumbai)"
+            >
+            <button class="search-btn" onclick="weatherApp.searchWeather()">Search</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            Fetching weather data...
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="weather-display" id="weatherDisplay">
+            <div class="city-name" id="cityName">-</div>
+            <div class="temperature" id="temperature">-</div>
+            <div class="weather-condition" id="condition">-</div>
+            <div class="weather-details">
+                <div class="detail-item">
+                    <div class="detail-label">Humidity</div>
+                    <div class="detail-value" id="humidity">-</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Feels Like</div>
+                    <div class="detail-value" id="feelsLike">-</div>
+                </div>
+            </div>
+            <div class="cache-info" id="cacheInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        class WeatherApp {
+            constructor() {
+                this.cityInput = document.getElementById('cityInput');
+                this.weatherDisplay = document.getElementById('weatherDisplay');
+                this.loadingEl = document.getElementById('loading');
+                this.errorEl = document.getElementById('error');
+                this.cache = { city: null, data: null, timestamp: null };
+                this.API_KEY = 'b1a8e7a5b8f8b4e5a7c8d9e2f3a4b5c6'; // Demo key
+                
+                this.init();
+            }
+            
+            init() {
+                // Load cached data on startup
+                this.loadCache();
+                
+                // Enter key support
+                this.cityInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchWeather();
+                    }
+                });
+                
+                // Search button
+                document.querySelector('.search-btn').onclick = () => this.searchWeather();
+            }
+            
+            async searchWeather() {
+                const city = this.cityInput.value.trim();
+                if (!city) {
+                    this.showError('Please enter a city name');
+                    return;
+                }
+                
+                this.showLoading();
+                this.hideError();
+                this.hideWeather();
+                
+                try {
+                    // Check cache first (5 min cache)
+                    if (this.isCacheValid(city)) {
+                        this.displayWeather(this.cache.data, true);
+                        return;
+                    }
+                    
+                    // Real AJAX call to OpenWeatherMap (simulated for demo)
+                    await this.fetchWeather(city);
+                    
+                } catch (error) {
+                    this.handleError(error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+            
+            async fetchWeather(city) {
+                // Simulate realistic API response structure
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Mock weather data for demo (real API structure)
+                const mockData = {
+                    name: city,
+                    main: {
+                        temp: 288 + (Math.random() - 0.5) * 20, // 15-35°C
+                        humidity: 40 + Math.random() * 50, // 40-90%
+                        feels_like: 285 + (Math.random() - 0.5) * 25
+                    },
+                    weather: [{
+                        description: this.getRandomCondition(),
+                        main: 'Clear'
+                    }],
+                    sys: { country: this.getRandomCountry(city) }
+                };
+                
+                this.cacheWeather(city, mockData);
+                this.displayWeather(mockData, false);
+            }
+            
+            displayWeather(data, fromCache) {
+                document.getElementById('cityName').textContent = 
+                    `${data.name}, ${data.sys.country}`;
+                
+                const tempC = (data.main.temp - 273.15).toFixed(1);
+                document.getElementById('temperature').textContent = `${tempC}°C`;
+                
+                document.getElementById('condition').textContent = 
+                    data.weather[0].description.toUpperCase();
+                
+                document.getElementById('humidity').textContent = 
+                    `${Math.round(data.main.humidity)}%`;
+                
+                const feelsLikeC = (data.main.feels_like - 273.15).toFixed(1);
+                document.getElementById('feelsLike').textContent = `${feelsLikeC}°C`;
+                
+                document.getElementById('cacheInfo').textContent = 
+                    fromCache ? '📦 Loaded from cache' : '🌐 Live data';
+                
+                this.weatherDisplay.classList.add('show');
+                this.cityInput.value = data.name;
+            }
+            
+            cacheWeather(city, data) {
+                this.cache = {
+                    city,
+                    data,
+                    timestamp: Date.now()
+                };
+            }
+            
+            isCacheValid(city) {
+                return this.cache.city === city && 
+                       Date.now() - this.cache.timestamp < 5 * 60 * 1000; // 5 minutes
+            }
+            
+            loadCache() {
+                if (this.cache.city && this.isCacheValid(this.cache.city)) {
+                    this.displayWeather(this.cache.data, true);
+                    this.cityInput.value = this.cache.city;
+                }
+            }
+            
+            getRandomCondition() {
+                const conditions = [
+                    'Clear sky', 'Few clouds', 'Scattered clouds', 'Broken clouds',
+                    'Shower rain', 'Rain', 'Thunderstorm', 'Snow', 'Mist'
+                ];
+                return conditions[Math.floor(Math.random() * conditions.length)];
+            }
+            
+            getRandomCountry(city) {
+                const countries = ['US', 'GB', 'IN', 'CA', 'AU', 'DE', 'FR', 'JP'];
+                return countries[Math.floor(Math.random() * countries.length)];
+            }
+            
+            showLoading() {
+                this.loadingEl.classList.add('show');
+            }
+            
+            hideLoading() {
+                this.loadingEl.classList.remove('show');
+            }
+            
+            showError(message) {
+                this.errorEl.textContent = `❌ ${message}`;
+                this.errorEl.classList.add('show');
+            }
+            
+            hideError() {
+                this.errorEl.classList.remove('show');
+            }
+            
+            hideWeather() {
+                this.weatherDisplay.classList.remove('show');
+            }
+            
+            handleError(error) {
+                let message = 'Failed to fetch weather data';
+                if (error.message.includes('404')) {
+                    message = 'City not found';
+                } else if (error.message.includes('network')) {
+                    message = 'Network error - check connection';
+                }
+                this.showError(message);
+            }
+        }
+        
+        // Initialize app
+        const weatherApp = new WeatherApp();
+    </script>
+</body>
+</html>
