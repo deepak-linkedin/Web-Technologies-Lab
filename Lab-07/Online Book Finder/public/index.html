@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Book Finder</title>
+</head>
+<body>
+    <h2>Search Book</h2>
+    <input id="searchTitle" placeholder="Enter title">
+    <button onclick="searchBooks()">Search</button>
+
+    <h2>Filter by Category</h2>
+    <button onclick="filterCategory('Programming')">Programming</button>
+    <button onclick="filterCategory('Database')">Database</button>
+
+    <h2>Sort</h2>
+    <button onclick="sortBooks('price')">Sort by Price</button>
+    <button onclick="sortBooks('rating')">Sort by Rating</button>
+
+    <h2>Top Rated Books</h2>
+    <button onclick="topBooks()">Show Top Books</button>
+
+    <h2>All Books</h2>
+    <button onclick="loadBooks()">Load Books</button>
+
+    <div id="books"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
