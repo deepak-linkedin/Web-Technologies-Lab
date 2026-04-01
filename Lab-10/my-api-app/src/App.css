@@ -1,0 +1,48 @@
+/* App.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  text-align: center;
+  padding: 50px;
+}
+
+.data-container {
+  background-color: #fff;
+  width: 500px;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.data-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.status-message {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+.status-message.error {
+  color: #dc3545;
+  font-weight: bold;
+}
