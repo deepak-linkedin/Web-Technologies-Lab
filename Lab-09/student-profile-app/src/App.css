@@ -1,0 +1,35 @@
+/* App.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+}
+
+.container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  width: 320px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.profile-card p {
+  font-size: 16px;
+  color: #555;
+  margin: 8px 0;
+}
+
+.profile-card strong {
+  color: #000;
+}

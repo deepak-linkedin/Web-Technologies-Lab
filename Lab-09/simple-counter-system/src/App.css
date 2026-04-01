@@ -1,0 +1,59 @@
+/* App.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  text-align: center;
+  padding: 50px;
+}
+
+.counter-card {
+  background-color: #ffffff;
+  width: 250px;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.counter-card h2 {
+  margin-top: 0;
+  color: #222;
+}
+
+.count-value {
+  font-size: 36px;
+  color: #333;
+  margin: 20px 0;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.button-group button:hover {
+  background-color: #007bff;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.button-group button:first-child {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.button-group button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
